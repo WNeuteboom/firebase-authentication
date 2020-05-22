@@ -1,6 +1,6 @@
 <?php
 
-namespace Firevel\FirebaseAuthentication;
+namespace WNeuteboom\FirebaseAuthentication;
 
 use Auth;
 use Firebase\Auth\Token\HttpKeyStore;

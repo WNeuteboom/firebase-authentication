@@ -1,6 +1,6 @@
 <?php
 
-namespace Firevel\FirebaseAuthentication\Http\Middleware;
+namespace WNeuteboom\FirebaseAuthentication\Http\Middleware;
 
 use Closure;
 

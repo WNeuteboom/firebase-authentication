@@ -1,5 +1,5 @@
 {
-    "name": "firevel/firebase-authentication",
+    "name": "wneuteboom/firebase-authentication",
     "description": "Firebase authentication driver for Laravel",
     "type": "library",
     "require": {
@@ -8,13 +8,13 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Firevel\\FirebaseAuthentication\\": "src/"
+            "WNeuteboom\\FirebaseAuthentication\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Firevel\\FirebaseAuthentication\\FirebaseAuthenticationServiceProvider"
+                "WNeuteboom\\FirebaseAuthentication\\FirebaseAuthenticationServiceProvider"
             ]
         }
     },

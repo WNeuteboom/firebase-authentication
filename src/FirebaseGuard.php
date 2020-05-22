@@ -1,6 +1,6 @@
 <?php
 
-namespace Firevel\FirebaseAuthentication;
+namespace WNeuteboom\FirebaseAuthentication;
 
 use Firebase\Auth\Token\Verifier;
 use Illuminate\Http\Request;

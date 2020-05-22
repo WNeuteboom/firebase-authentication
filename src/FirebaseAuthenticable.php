@@ -1,9 +1,16 @@
 <?php
 
-namespace Firevel\FirebaseAuthentication;
+namespace WNeuteboom\FirebaseAuthentication;
 
 trait FirebaseAuthenticable
 {
+    /**
+     * What column is used for the tokens.
+     *
+     * @var array
+     */
+    protected $tokenColumn = "id";
+
     /**
      * The claims decoded from the JWT token.
      *
@@ -20,24 +27,24 @@ trait FirebaseAuthenticable
      */
     public function resolveByClaims(array $claims): object
     {
-        $id = (string) $claims['sub'];
+        $tokenId = (string) $claims['sub'];
 
         $attributes = $this->transformClaims($claims);
 
-        return $this->updateOrCreateUser($id, $attributes);
+        return $this->updateOrCreateUser($tokenId, $attributes);
     }
 
     /**
      * Update or create user.
      *
-     * @param int|string $id
+     * @param int|string $tokenId
      * @param array      $attributes
      *
      * @return self
      */
-    public function updateOrCreateUser($id, array $attributes): object
+    public function updateOrCreateUser($tokenId, array $attributes): object
     {
-        if ($user = $this->find($id)) {
+        if ($user = $this->where($this->tokenColumn, $tokenId)) {
             $user
                 ->fill($attributes);
 
@@ -49,7 +56,7 @@ trait FirebaseAuthenticable
         }
 
         $user = $this->fill($attributes);
-        $user->id = $id;
+        $user->{$this->$tokenColumn} = $tokenId;
         $user->save();
 
         return $user;
@@ -86,7 +93,7 @@ trait FirebaseAuthenticable
      */
     public function getAuthIdentifierName()
     {
-        return 'id';
+        return $this->tokenColumn;
     }
 
     /**
@@ -96,7 +103,7 @@ trait FirebaseAuthenticable
      */
     public function getAuthIdentifier()
     {
-        return $this->id;
+        return $this->{$this->tokenColumn};
     }
 
     /**
