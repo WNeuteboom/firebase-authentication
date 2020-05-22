@@ -5,13 +5,6 @@ namespace WNeuteboom\FirebaseAuthentication;
 trait FirebaseAuthenticable
 {
     /**
-     * What column is used for the tokens.
-     *
-     * @var array
-     */
-    protected $tokenColumn = "id";
-
-    /**
      * The claims decoded from the JWT token.
      *
      * @var array
@@ -27,24 +20,24 @@ trait FirebaseAuthenticable
      */
     public function resolveByClaims(array $claims): object
     {
-        $tokenId = (string) $claims['sub'];
+        $firebaseId = (string) $claims['sub'];
 
         $attributes = $this->transformClaims($claims);
 
-        return $this->updateOrCreateUser($tokenId, $attributes);
+        return $this->updateOrCreateUser($firebaseId, $attributes);
     }
 
     /**
      * Update or create user.
      *
-     * @param int|string $tokenId
+     * @param int|string $firebaseId
      * @param array      $attributes
      *
      * @return self
      */
-    public function updateOrCreateUser($tokenId, array $attributes): object
+    public function updateOrCreateUser($firebaseId, array $attributes): object
     {
-        if ($user = $this->where($this->tokenColumn, $tokenId)) {
+        if ($user = $this->where($this->getAuthIdentifierName(), $firebaseId)->limit(1)->first()) {
             $user
                 ->fill($attributes);
 
@@ -56,7 +49,7 @@ trait FirebaseAuthenticable
         }
 
         $user = $this->fill($attributes);
-        $user->{$this->$tokenColumn} = $tokenId;
+        $user->{$this->getAuthIdentifierName()} = $firebaseId;
         $user->save();
 
         return $user;
@@ -93,7 +86,7 @@ trait FirebaseAuthenticable
      */
     public function getAuthIdentifierName()
     {
-        return $this->tokenColumn;
+        return $this->firebaseIdColumn ?? 'id';
     }
 
     /**
@@ -103,7 +96,7 @@ trait FirebaseAuthenticable
      */
     public function getAuthIdentifier()
     {
-        return $this->{$this->tokenColumn};
+        return $this->{$this->getAuthIdentifierName()};
     }
 
     /**
