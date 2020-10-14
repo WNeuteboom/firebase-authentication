@@ -1,6 +1,6 @@
 # Firebase Authentication for Laravel
 
-Firebase authentication API driver for Laravel/Firevel.
+Firebase authentication API driver for Laravel/WNeuteboom.
 
 ## Overview
 
@@ -10,7 +10,7 @@ The driver contains a firebase guard that authenticates user by Firebase Authent
 
 1) Install the package using composer:
 ```
-composer require firevel/firebase-authentication
+composer require wneuteboom/firebase-authentication
 ```
 
 2) Update config/auth.php.
@@ -29,7 +29,7 @@ composer require firevel/firebase-authentication
 ],
 ```
 
-3) Update your User model with `Firevel\FirebaseAuthentication\FirebaseAuthenticable` trait `$incrementing = false` and fillables.
+3) Update your User model with `WNeuteboom\FirebaseAuthentication\FirebaseAuthenticable` trait
 
 Eloquent example:
 ```
@@ -40,17 +40,13 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use WNeuteboom\FirebaseAuthentication\FirebaseAuthenticable;
 
 class User extends Authenticatable
 {
     use Notifiable, FirebaseAuthenticable;
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $firebaseIdColumn = "firebase_id";
 
     /**
      * The attributes that are mass assignable.
@@ -58,7 +54,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'picture'
+        'firebase_id', 'name', 'email', 'picture'
     ];
 }
 
@@ -69,8 +65,8 @@ Firequent example:
 
 namespace App;
 
-use Firevel\FirebaseAuthentication\FirebaseAuthenticable;
-use Firevel\Firequent\Model;
+use WNeuteboom\FirebaseAuthentication\FirebaseAuthenticable;
+use WNeuteboom\Firequent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -78,12 +74,7 @@ class User extends Model implements Authenticatable
 {
     use Notifiable, FirebaseAuthenticable;
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $firebaseIdColumn = "firebase_id";
 
     /**
      * The attributes that are mass assignable.
@@ -100,7 +91,7 @@ class User extends Model implements Authenticatable
 
 4. If you are using Eloquent you need to create or update migration for users table manually.
 ```
-$table->string('id');
+$table->string('firebase_id')->unique();
 $table->string('name');
 $table->string('email')->unique();
 $table->string('picture');
@@ -116,7 +107,7 @@ You can also store bearer token in `bearer_token` cookie variable and add to you
     protected $middlewareGroups = [
         'web' => [
             ...
-            \Firevel\FirebaseAuthentication\Http\Middleware\AddAccessTokenFromCookie::class,
+            \WNeuteboom\FirebaseAuthentication\Http\Middleware\AddAccessTokenFromCookie::class,
             ...
         ],
 
