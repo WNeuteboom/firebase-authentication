@@ -2,6 +2,8 @@
 
 namespace WNeuteboom\FirebaseAuthentication;
 
+use Illuminate\Support\Facades\Crypt;
+
 trait FirebaseAuthenticable
 {
     /**
@@ -106,29 +108,32 @@ trait FirebaseAuthenticable
      */
     public function getAuthPassword()
     {
-        throw new \Exception('No password support for Firebase Users');
+        return Crypt::encryptString($this->getAuthIdentifier());
     }
 
     /**
      * Get the token value for the "remember me" session.
      *
-     * @return string
+     * @return string|null
      */
     public function getRememberToken()
     {
-        throw new \Exception('No remember token support for Firebase Users');
+        if (! empty($this->getRememberTokenName())) {
+            return (string) $this->{$this->getRememberTokenName()};
+        }
     }
 
     /**
      * Set the token value for the "remember me" session.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function setRememberToken($value)
     {
-        throw new \Exception('No remember token support for Firebase User');
+        if (! empty($this->getRememberTokenName())) {
+            $this->{$this->getRememberTokenName()} = $value;
+        }
     }
 
     /**
@@ -138,6 +143,6 @@ trait FirebaseAuthenticable
      */
     public function getRememberTokenName()
     {
-        throw new \Exception('No remember token support for Firebase User');
+        return $this->rememberTokenName;
     }
 }
